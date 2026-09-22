@@ -1,0 +1,1133 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>廉洁人格六边形趣味心理测评</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: "PingFang SC", "Microsoft YaHei", "Noto Serif SC", serif;
+    min-height: 100vh;
+    color: #2c2416;
+    background:
+      radial-gradient(circle at 15% 10%, rgba(201, 162, 74, 0.18), transparent 42%),
+      radial-gradient(circle at 85% 8%, rgba(139, 90, 43, 0.15), transparent 40%),
+      radial-gradient(circle at 50% 100%, rgba(160, 82, 45, 0.18), transparent 45%),
+      linear-gradient(180deg, #fbf6ea 0%, #f3ead3 45%, #ecdfc2 100%);
+    background-attachment: fixed;
+    padding: 32px 16px;
+  }
+
+  .wrap {
+    max-width: 960px;
+    margin: 0 auto;
+    background: rgba(255, 252, 245, 0.88);
+    border: 1px solid rgba(139, 90, 43, 0.25);
+    border-radius: 24px;
+    padding: 36px 28px;
+    box-shadow:
+      0 20px 50px rgba(80, 50, 20, 0.18),
+      0 0 0 1px rgba(255, 255, 255, 0.6) inset;
+    backdrop-filter: blur(8px);
+  }
+
+  h1 {
+    text-align: center;
+    font-size: 30px;
+    font-weight: 900;
+    letter-spacing: 4px;
+    color: #3b2f1a;
+    margin-bottom: 10px;
+  }
+
+  .subtitle {
+    text-align: center;
+    font-size: 14px;
+    color: #7a6a4a;
+    margin-bottom: 24px;
+    letter-spacing: 1px;
+  }
+
+  .seal {
+    display: inline-block;
+    background: #a0522d;
+    color: #fbf6ea;
+    padding: 8px 18px;
+    border-radius: 12px;
+    font-size: 13px;
+    letter-spacing: 6px;
+    font-weight: 700;
+    margin-bottom: 18px;
+    box-shadow: 0 8px 20px rgba(160, 82, 45, 0.35);
+  }
+
+  .tip {
+    background: rgba(255, 248, 230, 0.9);
+    border: 1px solid rgba(201, 162, 74, 0.35);
+    border-left: 4px solid #c9a24a;
+    border-radius: 16px;
+    padding: 18px 20px;
+    margin-bottom: 28px;
+    font-size: 14px;
+    line-height: 1.9;
+    color: #5a4a28;
+  }
+
+  .progress-card {
+    background: rgba(255, 252, 245, 0.9);
+    border: 1px solid rgba(139, 90, 43, 0.22);
+    border-radius: 18px;
+    padding: 18px 22px;
+    margin-bottom: 24px;
+    box-shadow: 0 10px 24px rgba(80, 50, 20, 0.08);
+  }
+
+  .progress-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    font-size: 14px;
+    color: #5a4a28;
+  }
+
+  .progress-head span {
+    font-weight: 700;
+  }
+
+  .progress-bar {
+    width: 100%;
+    height: 10px;
+    background: rgba(139, 90, 43, 0.12);
+    border-radius: 999px;
+    overflow: hidden;
+    border: 1px solid rgba(139, 90, 43, 0.18);
+  }
+
+  .progress-fill {
+    height: 100%;
+    width: 0;
+    background: linear-gradient(90deg, #c9a24a, #a0522d);
+    border-radius: 999px;
+    transition: width 0.4s ease;
+  }
+
+  .q {
+    background: rgba(255, 252, 245, 0.92);
+    border: 1px solid rgba(139, 90, 43, 0.22);
+    border-radius: 20px;
+    padding: 22px;
+    margin-bottom: 18px;
+    box-shadow: 0 10px 24px rgba(80, 50, 20, 0.08);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .q:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 14px 30px rgba(80, 50, 20, 0.12);
+  }
+
+  .q-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: #3b2f1a;
+    margin-bottom: 14px;
+    line-height: 1.8;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .q-index {
+    flex-shrink: 0;
+    width: 30px;
+    height: 30px;
+    background: linear-gradient(135deg, #8b5a2b, #a0522d);
+    color: #fbf6ea;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    box-shadow: 0 6px 14px rgba(139, 90, 43, 0.35);
+  }
+
+  .opt {
+    background: rgba(255, 255, 255, 0.7);
+    border: 1px solid rgba(139, 90, 43, 0.22);
+    border-radius: 14px;
+    padding: 16px 16px;
+    margin-bottom: 10px;
+    font-size: 14.5px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: #4a3a20;
+  }
+
+  .opt:hover {
+    border-color: #c9a24a;
+    background: rgba(201, 162, 74, 0.08);
+    transform: translateX(4px);
+  }
+
+  .opt input {
+    accent-color: #a0522d;
+    width: 22px;
+    height: 22px;
+    cursor: pointer;
+  }
+
+  .btn-box {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    margin-top: 34px;
+    flex-wrap: wrap;
+  }
+
+  .btn {
+    border: none;
+    padding: 14px 34px;
+    border-radius: 999px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    letter-spacing: 2px;
+    transition: all 0.25s ease;
+  }
+
+  .btn-submit {
+    background: linear-gradient(135deg, #8b5a2b, #a0522d);
+    color: #fbf6ea;
+    box-shadow: 0 14px 30px rgba(139, 90, 43, 0.4);
+  }
+
+  .btn-submit:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 18px 36px rgba(139, 90, 43, 0.5);
+  }
+
+  .btn-reset {
+    background: rgba(255, 252, 245, 0.9);
+    color: #5a4a28;
+    border: 1px solid rgba(139, 90, 43, 0.3);
+  }
+
+  .btn-reset:hover {
+    background: rgba(201, 162, 74, 0.12);
+    transform: translateY(-3px);
+  }
+
+  .btn-back {
+    background: #e8edf4;
+    color:#44546a;
+    border:1px solid #bbc8dd;
+  }
+
+  .btn-share{
+    background:#406894;
+    color:#fff;
+  }
+
+  .btn-small{
+    padding:8px 18px;font-size:14px;
+  }
+
+  #res {
+    display: none;
+    margin-top: 40px;
+  }
+
+  .res-head {
+    text-align: center;
+    font-size: 24px;
+    font-weight: 900;
+    letter-spacing: 4px;
+    color: #3b2f1a;
+    margin-bottom: 8px;
+  }
+
+  .res-sub {
+    text-align: center;
+    font-size: 14px;
+    color: #7a6a4a;
+    margin-bottom: 28px;
+    letter-spacing: 1px;
+  }
+
+  .chart-box {
+    width: 100%;
+    max-width: 480px;
+    margin: 0 auto 32px auto;
+    background: rgba(255, 252, 245, 0.9);
+    border: 1px solid rgba(139, 90, 43, 0.22);
+    border-radius: 20px;
+    padding: 22px;
+    box-shadow: 0 14px 30px rgba(80, 50, 20, 0.12);
+  }
+
+  .score-list{
+    background:#fff9ec;
+    border-radius:16px;
+    padding:18px;
+    margin-bottom:24px;
+    border:1px solid #e2d4b8;
+  }
+  .score-item{
+    display:flex;justify-content:space-between;padding:6px 0;
+    border-bottom:1px dashed #ddd2bc;
+  }
+  .score-item:last-child{border-bottom:none;}
+
+  .case-card,
+  .good-card,
+  .suggest-card {
+    border-radius: 20px;
+    padding: 22px;
+    margin-bottom: 20px;
+    line-height: 1.9;
+    font-size: 14.5px;
+  }
+
+  .case-card {
+    background: rgba(255, 240, 240, 0.9);
+    border: 1px solid rgba(197, 60, 60, 0.25);
+    border-left: 5px solid #c53c3c;
+    color: #5a2020;
+  }
+
+  .good-card {
+    background: rgba(240, 250, 245, 0.9);
+    border: 1px solid rgba(42, 148, 98, 0.25);
+    border-left: 5px solid #2a9462;
+    color: #1f4d35;
+  }
+
+  .suggest-card {
+    background: rgba(255, 248, 230, 0.9);
+    border: 1px solid rgba(201, 162, 74, 0.3);
+    border-left: 5px solid #c9a24a;
+    color: #5a4418;
+  }
+
+  .warn-text {
+    margin-top: 14px;
+    color: #b53030;
+    font-weight: 700;
+  }
+
+  .summary {
+    background: rgba(240, 245, 250, 0.9);
+    border: 1px solid rgba(116, 148, 200, 0.3);
+    border-radius: 18px;
+    padding: 18px;
+    color: #44546a;
+    font-size: 14px;
+    line-height: 1.9;
+  }
+
+  .no-chart-tip{
+    text-align:center;padding:20px;color:#888;
+  }
+
+  /*分享弹窗*/
+  .mask{
+    position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:999;display:none;align-items:center;justify-content:center;padding:16px;
+  }
+  .share-modal{
+    width:100%;max-width:540px;background:#fffbf1;border-radius:20px;padding:24px;max-height:90vh;overflow-y:auto;
+  }
+  .share-preview-card{
+    background:#fff9ec;border:1px solid #d8c8a8;border-radius:16px;padding:20px;margin:12px 0;
+  }
+  .qrcode-wrap{
+    text-align:center;margin:16px 0;
+  }
+  #shareCanvasWrap{
+    background:#fff9ec;padding:16px;border-radius:12px;
+  }
+  .share-link-box{
+    background:#efeadc;padding:10px;border-radius:8px;font-size:13px;margin:10px 0;
+  }
+  textarea.copy-textarea{
+    width:100%;min-height:80px;padding:8px;border-radius:6px;border:1px solid #ccc;margin:8px 0;
+  }
+  /*分享预览页面（被别人点开分享链接）*/
+  #sharePreviewPage{
+    display:none;
+  }
+
+  @media (max-width: 640px) {
+    .wrap {
+      padding: 24px 18px;
+    }
+    h1 {
+      font-size: 24px;
+    }
+    .q-title {
+      font-size: 15px;
+    }
+    .btn {
+      width: 100%;
+    }
+  }
+
+  @media print {
+    body{background:#fff;padding:0;}
+    .wrap{box-shadow:none;border:none;background:#fff;max-width:100%;padding:10px;}
+    .btn-box,.tip,.progress-card{display:none !important;}
+    .q{display:none !important;}
+    #res{display:block !important;margin:0;}
+    .mask{display:none !important;}
+    #sharePreviewPage{display:block !important;}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <!-- 分享预览页面：别人点开分享链接，先看这个，无作答表单 -->
+  <div id="sharePreviewPage">
+    <div class="text-center mb-6">
+      <span class="seal px-4 py-2 rounded-full">他人测评分享预览</span>
+    </div>
+    <div class="share-preview-card" id="sharePreviewContent"></div>
+    <div class="btn-box">
+      <button class="btn btn-submit" onclick="hideSharePreview()">👉 参与本测评</button>
+    </div>
+  </div>
+
+  <!--正常测评页面 -->
+  <div id="mainTestPage">
+    <h1>廉洁人格六边形趣味心理测评</h1>
+    <p class="subtitle">—— 防微杜渐 · 慎独慎微 ——</p>
+    <div style="text-align:center;">
+      <span class="seal">廉 政 风 险 自 测</span>
+    </div>
+    <div class="tip">
+      <strong>测试说明：</strong>轻松趣味人格测试，无考核、无对错！<br>
+      凭第一直觉选择最贴合你心态的选项，测出你的廉洁人格风险六边形。<br>
+      <span style="color:#a0522d;">⚠ 选项已随机打乱，请按真实想法作答。作答会本地保存，刷新页面可恢复。</span>
+    </div>
+
+    <div class="progress-card">
+      <div class="progress-head">
+        <span>📜 答题进度</span>
+        <span id="progressText">0 / 18</span>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill" id="progressBar"></div>
+      </div>
+    </div>
+
+    <div id="qList"></div>
+
+    <div class="btn-box">
+      <button id="submitBtn" class="btn btn-submit" onclick="calc()">生成六边形测评结果</button>
+      <button class="btn btn-reset" onclick="clearAllAnswer()">清空所有答案</button>
+    </div>
+
+    <div id="res">
+      <div class="res-head">你的廉洁人格风险图谱</div>
+      <p class="res-sub">基于六大廉洁风险维度心理倾向测评</p>
+      <div class="chart-box">
+        <div id="chartWrap"></div>
+      </div>
+      <div id="scoreBox" class="score-list"></div>
+      <div id="resultContent"></div>
+      <div class="btn-box">
+        <button class="btn btn-back" onclick="backToQuestion()">返回答题页（保留作答）</button>
+        <button class="btn btn-reset" onclick="clearAllAnswer()">重新测评（清空答案）</button>
+        <button class="btn btn-share" onclick="openShareModal()">📤分享测评结果</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!--分享弹窗mask -->
+<div class="mask" id="shareMask" onclick="closeShareModalByMask(event)">
+  <div class="share-modal" onclick="event.stopPropagation()">
+    <h3 class="text-xl font-bold mb-3">分享我的测评结果</h3>
+    <p class="text-sm text-gray-600 mb-2">说明：分享图片已过滤案件敏感信息，仅展示人格类型、分数与改进建议。</p>
+    <div class="qrcode-wrap">
+      <div id="qrcodeDom"></div>
+      <div id="shareCanvasWrap"></div>
+    </div>
+    <div>
+      <p>🔗分享链接：</p>
+      <div class="share-link-box" id="shareLinkText">点击下方复制按钮获取完整分享链接</div>
+      <textarea id="copyTextarea" class="copy-textarea" readonly></textarea>
+      <div class="btn-box">
+        <button class="btn btn-submit btn-small" onclick="copyShareLink()">复制链接</button>
+        <button class="btn btn-reset btn-small" onclick="genShareImage()">生成分享图片（保存相册）</button>
+      </div>
+    </div>
+    <div class="btn-box mt-4">
+      <button class="btn btn-reset" onclick="closeShareModal()">关闭弹窗</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// 18道题目原始数据
+const questionData = [
+  {
+    qid:"q1",
+    title:"看着身边朋友、同龄人赚钱轻松、生活精致，对比自己安稳枯燥的工作，偶尔会有点心里不平衡。",
+    opts:[
+      {val:1,text:"完全不会，心态很稳"},
+      {val:2,text:"偶尔感慨一下，转瞬就忘"},
+      {val:3,text:"经常会有点羡慕、不甘心"},
+      {val:4,text:"落差感很强，总觉得自己亏了"}
+    ]
+  },
+  {
+    qid:"q2",
+    title:"自己踏实干活多年，付出很多却没得到对等回报，会萌生“我该多为自己捞点补偿”的想法。",
+    opts:[
+      {val:1,text:"从未有过，踏实本分"},
+      {val:2,text:"偶尔吐槽，不会当真"},
+      {val:3,text:"心里时常觉得不公平"},
+      {val:4,text:"强烈觉得自己值得更好的回报"}
+    ]
+  },
+  {
+    qid:"q3",
+    title:"偶尔会觉得，自己岗位辛苦责任大，适当利用现有资源便利一下自己，也不算过分。",
+    opts:[
+      {val:1,text:"完全不认同，公私分明"},
+      {val:2,text:"偶尔一闪而过，立刻否定"},
+      {val:3,text:"有点认同，能理解这种想法"},
+      {val:4,text:"非常认同，理所应当"}
+    ]
+  },
+  {
+    qid:"q4",
+    title:"日常一些无伤大雅的小变通、小便利，只要没人刻意深究，基本不会出问题。",
+    opts:[
+      {val:1,text:"绝不侥幸，依规做事"},
+      {val:2,text:"偶尔这么想，但不会做"},
+      {val:3,text:"经常抱有这种想法"},
+      {val:4,text:"笃定小事没人管、没人查"}
+    ]
+  },
+  {
+    qid:"q5",
+    title:"看到身边人灵活办事获利且平安无事，会降低自己对规则的警惕心。",
+    opts:[
+      {val:1,text:"不受影响，坚守底线"},
+      {val:2,text:"稍微动摇，很快清醒"},
+      {val:3,text:"会羡慕，觉得规则可灵活变通"},
+      {val:4,text:"心态彻底放松，觉得不用太较真"}
+    ]
+  },
+  {
+    qid:"q6",
+    title:"只要做事隐蔽、不留痕迹，稍微突破一点规矩，完全可以蒙混过关。",
+    opts:[
+      {val:1,text:"坚决不信，敬畏监督"},
+      {val:2,text:"偶尔幻想，绝不实践"},
+      {val:3,text:"觉得有一定可行性"},
+      {val:4,text:"深信只要隐蔽就不会出事"}
+    ]
+  },
+  {
+    qid:"q7",
+    title:"亲戚、老友、老同事开口求助，哪怕稍微越界，也不好意思直接拒绝伤感情。",
+    opts:[
+      {val:1,text:"原则优先，果断拒绝"},
+      {val:2,text:"有点为难，但坚守原则"},
+      {val:3,text:"大概率会心软帮忙"},
+      {val:4,text:"极度抹不开面子，基本有求必应"}
+    ]
+  },
+  {
+    qid:"q8",
+    title:"长期合作、关系要好的熟人，会下意识觉得可以适当通融，不用死抠制度。",
+    opts:[
+      {val:1,text:"公私分明，一视同仁"},
+      {val:2,text:"偶尔松动，绝不破例"},
+      {val:3,text:"会优先照顾熟人情面"},
+      {val:4,text:"熟人特权理所应当"}
+    ]
+  },
+  {
+    qid:"q9",
+    title:"日常吃请、小礼物、人情往来，觉得都是普通社交，没必要上纲上线。",
+    opts:[
+      {val:1,text:"清晰边界，主动规避"},
+      {val:2,text:"平常心看待，保持距离"},
+      {val:3,text:"觉得都是小事，无需介意"},
+      {val:4,text:"完全不在意，习以为常"}
+    ]
+  },
+  {
+    qid:"q10",
+    title:"经常羡慕精致奢华的生活，希望自己能大幅提升消费档次和生活品质。",
+    opts:[
+      {val:1,text:"知足常乐，不慕浮华"},
+      {val:2,text:"偶尔羡慕，不刻意追求"},
+      {val:3,text:"很向往，想努力追赶"},
+      {val:4,text:"极度渴望高品质享乐生活"}
+    ]
+  },
+  {
+    qid:"q11",
+    title:"遇到专属优待、贵重礼品、特殊福利，内心会心动，舍不得直接推辞。",
+    opts:[
+      {val:1,text:"果断拒绝，毫无留恋"},
+      {val:2,text:"略有心动，依旧坚守底线"},
+      {val:3,text:"很难拒绝，容易动摇"},
+      {val:4,text:"欣然接受，觉得是应有待遇"}
+    ]
+  },
+  {
+    qid:"q12",
+    title:"偶尔会想，要是能有更多额外收入，就能彻底改善生活、满足个人爱好。",
+    opts:[
+      {val:1,text:"踏实自律，无额外杂念"},
+      {val:2,text:"偶尔想想，从不贪求"},
+      {val:3,text:"经常有这种想法"},
+      {val:4,text:"强烈渴望快速增加收入"}
+    ]
+  },
+  {
+    qid:"q13",
+    title:"很少主动深究规章制度细节，觉得大体合规、不出大错就足够。",
+    opts:[
+      {val:1,text:"主动学习，严守细节"},
+      {val:2,text:"基本了解，不敷衍细节"},
+      {val:3,text:"只求大概，不在意细节"},
+      {val:4,text:"完全懒得研究规矩"}
+    ]
+  },
+  {
+    qid:"q14",
+    title:"只要大原则没问题，日常小松懈、小随意、小马虎都不算问题。",
+    opts:[
+      {val:1,text:"小节从严，无松懈"},
+      {val:2,text:"尽量严谨，减少疏忽"},
+      {val:3,text:"觉得小节无关紧要"},
+      {val:4,text:"彻底不拘小节，随意行事"}
+    ]
+  },
+  {
+    qid:"q15",
+    title:"觉得很多制度过于死板，现实工作中适度变通、灵活处理更合理。",
+    opts:[
+      {val:1,text:"敬畏制度，严格执行"},
+      {val:2,text:"理解制度，不擅自变通"},
+      {val:3,text:"经常想灵活突破规矩"},
+      {val:4,text:"笃定规矩太僵化，必须变通"}
+    ]
+  },
+  {
+    qid:"q16",
+    title:"手握岗位便利权限时，顺手帮自己、熟人简化流程、省点事是人之常情。",
+    opts:[
+      {val:1,text:"坚决杜绝，公私分明"},
+      {val:2,text:"绝不利用职权谋便利"},
+      {val:3,text:"偶尔会顺手帮忙"},
+      {val:4,text:"经常利用职权行方便"}
+    ]
+  },
+  {
+    qid:"q17",
+    title:"发现工作流程漏洞、便利空间，不会刻意回避，偶尔会顺势利用。",
+    opts:[
+      {val:1,text:"主动规避、上报整改"},
+      {val:2,text:"坚守底线，绝不利用"},
+      {val:3,text:"会心动但尽量克制"},
+      {val:4,text:"主动抓住漏洞谋便利"}
+    ]
+  },
+  {
+    qid:"q18",
+    title:"在岗时间久了，会慢慢放松自我约束，做事比入职初期更松懈随意。",
+    opts:[
+      {val:1,text:"始终严谨，初心不变"},
+      {val:2,text:"基本保持严谨状态"},
+      {val:3,text:"明显松懈、降低标准"},
+      {val:4,text:"彻底放松、随性履职"}
+    ]
+  }
+];
+
+const dimConfig = [
+    {
+        name: "心态失衡型（补偿人格）",
+        label:"心态平衡",
+        qs: [1,2,3],
+        psych: "核心心理：自认付出多、压力大，对比设备商、工程老板财富产生落差，想用权力补偿自己。",
+        caseLow: "谭军武（国网湖南电力原副总经理，2025被查）：长期扎根湖南电网基建、农网改造一线，常年攻坚重点工程。看到工程承包商收益丰厚心生不甘，在电网项目招标、工程结算环节为企业谋利，收受财物。岗位辛苦带来的心理失衡，是国网干部腐化的常见起点。",
+        caseMid: "樊功成（国网综合能源服务集团原副总经理，2025被查）：分管光伏、节能改造项目，对比民企老板快速致富产生落差，认为自己贡献大应获得额外回报，在项目评审、合同签订中为合作企业谋利，接受商人围猎。岗位辛苦带来的心理失衡，是国网干部腐化的常见起点。",
+        caseHigh: "陈锡祥（国网安徽电力原副总经理，2026双开）：长期主管电网基建、设备采购，承受重大工程压力。对比设备供应商巨额利润心态失衡，多次违规插手重大工程发包，收受巨额贿赂，靠电吃电。岗位辛苦带来的心理失衡，是国网干部腐化的常见起点。",
+        improve: "改进方向：建立稳定的职业心态，接纳岗位权责与待遇差异，坚守电力岗位初心，拒绝攀比内耗，以履职成效实现自我价值。",
+        warn: "警示：心态失衡是腐败最隐蔽的起点，一次不甘的念头，长期放任就会演变成无法挽回的人生翻车，切勿纵容负面心态滋生！"
+    },
+    {
+        name: "侥幸投机型（赌徒人格）",
+        label:"杜绝侥幸",
+        qs: [4,5,6],
+        psych: "核心心理：自以为操作隐蔽、手段高明，利益输送做得隐秘，赌组织不会查到。",
+        caseLow: "赖征田（国网信通产业集团原副总经理，2026被查）：负责电网数字化、信息化项目招投标，采取小额多次收受好处，专门挑选熟悉服务商，认为单笔金额不大不易被发现，逐步突破底线。精心设计的隐蔽操作，终究逃不过监督。",
+        caseMid: "于德明（国网冀北电力原副总经理，2025被查）：在电网工程、物资采购中，搭建多层代持、资金走账链路，将受贿伪装成投资分红，自以为资金链路复杂，审计、纪检难以穿透核查。精心设计的隐蔽操作，终究逃不过监督。",
+        caseHigh: "陈晓林（国家电网原物资部主任，2022被查）：手握国网全国大宗物资集中采购大权，与设备商串通，通过多层第三方公司隔离利益输送，包装为市场化交易，长期收受巨额回扣，涉案覆盖面广。精心设计的隐蔽操作，终究逃不过监督。",
+        improve: "改进方向：彻底摒弃侥幸心理，牢记「监督无死角、违纪必追责」，小事小节严守规矩，不赌运气、不钻漏洞，养成依规履职的职业习惯。",
+        warn: "警示：所有侥幸都是自我欺骗，没有永远隐蔽的违规，一次投机试探，就是坠落深渊的开端，绝不可心存侥幸、以身试规！"
+    },
+    {
+        name: "人情裹挟型（重情人格）",
+        label:"理性人情",
+        qs: [7,8,9],
+        psych: "核心心理：碍于老友、熟人、圈子情面，被温水煮青蛙式长期围猎，公私边界模糊。",
+        caseLow: "王迪卿（国网江西电力原党委副书记、副总经理，2026被查）：在江西电力任职多年，面对本地工程老熟人，抹不开情面，在电网配套工程分包、工程款拨付环节给予照顾，逐步接受利益输送。人情越界就是腐败的入口。",
+        caseMid: "李新国（国网湖北电力原党委副书记，2025被查）：和电力设备、工程老板相交十余年，长期被商人贴心围猎，生活琐事持续关照。碍于多年交情，多次在项目评审、供应商准入上放松标准。人情越界就是腐败的入口。",
+        caseHigh: "魏庆海（国家电网华中分部原副主任，已判决）：长期与设备厂商负责人深度交往，多次接受请托，利用职权帮助企业拓展业务、安排人员入职，被人情绑架，累计受贿金额巨大。人情越界就是腐败的入口。",
+        improve: "改进方向：建立清晰的公私边界，坚持原则大于人情，学会温柔且坚定地拒绝违规请托，净化社交圈子，杜绝人情凌驾于规矩之上。",
+        warn: "警示：人情越界就是腐败入口，无数干部栽倒在「碍于情面」，一次心软退让，就会一步步陷入利益陷阱，切勿被人情绑架人生！"
+    },
+    {
+        name: "贪欲膨胀型（享乐人格）",
+        label:"克制贪欲",
+        qs: [10,11,12],
+        psych: "核心心理：痴迷奢靡享受，私欲不断放大，利用电网项目资源换取财富、高端消费。",
+        caseLow: "干磊（国网湖北黄冈供电公司原副总经理，2026通报）：接受服务商安排的高消费活动，借公务差旅违规公款吃喝、入住高档酒店；为支撑享乐开销，在地方配网工程、物资采购中为管理服务对象谋利。欲望一旦失控，会不惜拿自由前途换取物质享受。",
+        caseMid: "刘耀华（国网陕西电力原副总经理，判决案例）：痴迷房产投资、奢侈品消费，贪欲不断膨胀，依托电网基建、线路改造项目审批职权，大肆收受工程承包商财物，把权力当作敛财工具。欲望一旦失控，会不惜拿自由前途换取物质享受。",
+        caseHigh: "黄晓武（国网原党组成员、副总经理，已判决）：身居国网高管岗位，贪欲膨胀，热衷于奢靡社交，在电网重大基建、物资采购项目中，收受工程商人巨额财物，风腐一体，违纪违法金额巨大。欲望一旦失控，会不惜拿自由前途换取物质享受。",
+        improve: "改进方向：树立知足常乐的消费观、价值观，克制过度物质欲望，远离奢靡诱惑，坚守朴素本心，把精力放在工作成长而非享乐攀比上。",
+        warn: "警示：贪欲是无底深渊，享乐一旦成瘾，就会甘愿用前途、自由换取短暂浮华，欲望失控的那一刻，人生就已经注定翻车！"
+    },
+    {
+        name: "底线薄弱型（随性人格）",
+        label:"坚守底线",
+        qs: [13,14,15],
+        psych: "核心心理：纪法敬畏缺失，认为制度可以灵活变通，小节无所谓，个人意志凌驾制度。",
+        caseLow: "黄进（国网四川电力原副总工程师，2024被查）：纪法观念淡薄，视内控评审流程为束缚，在配网改造项目中随意简化评审、调整项目方案，片面认为工程质量合格即可，业务流程可以灵活处理，小节失守。小节不守、大节难保。",
+        caseMid: "曲辉（国家电网特高压事业部计划处原副处长，2023被查）：手握特高压项目立项、预算调整权限，少量多次收受好处，主观认为单笔金额小不容易被察觉，随意调整项目预算，优先向特定企业倾斜，漠视内控监督。小节不守、大节难保。",
+        caseHigh: "赵启昌（国网中兴原正局级调研员，2026被查）：长期认为后勤、信息化配套项目招投标只是形式，可以简化变通，多次为合作企业量身设置准入条件，无视国企采购制度红线，多次违规干预项目。小节不守、大节难保。",
+        improve: "改进方向：常态化学习纪律规矩，强化敬畏之心，牢记「小节不守、大节难保」，不随意变通制度、不敷衍细节漏洞，全方位守住行为底线。",
+        warn: "警示：对规矩不敬畏，就是对自己不负责，所有随性散漫、小节松懈，日积月累都会变成击穿底线的致命隐患！"
+    },
+    {
+        name: "权责松懈型（松弛人格）",
+        label:"权责严谨",
+        qs: [16,17,18],
+        psych: "核心心理：长期在国网岗位任职，任职日久初心淡化，自我约束放松，滋生特权思想。",
+        caseLow: "周凯（国网辽宁电力原副总经理，2024被查）：长期分管电网运维检修工程，任职多年警惕性下降，自我要求松弛，对下属违规插手项目行为失管失察，逐步接受承包商利益输送。权力松弛一刻，风险滋生一分。",
+        caseMid: "张先正（国网河南电力原总经理，已判决）：长期担任省公司一把手，任职日久初心淡化，特权思想滋生，对亲属约束不严，默许亲属依托本人职权承接电力配套工程项目，公权私用。权力松弛一刻，风险滋生一分。",
+        caseHigh: "朱长林（国家电网原总经理，已判决）：长期主管电网基建与物资采购，在岗多年逐渐放松自我约束，特权思想滋生，家风失守。利用职权在工程发包、设备采购中为企业谋利，大肆收受贿赂，离职后仍利用原有影响力敛财，不收敛不收手。权力松弛一刻，风险滋生一分。",
+        improve: "改进方向：时刻牢记权力为公、权责对等，在岗一日严谨一日，杜绝特权思想，不利用职权谋私、不滥用便利，始终保持履职初心与严谨度。",
+        warn: "警示：权力松弛一刻，风险滋生一分，履职松懈是干部堕落的隐形通道，长期放任松弛，终将葬送职业前途！"
+    }
+];
+
+let chartIns = null;
+let calcTimer = null;
+const STORAGE_KEY = "lian_jie_test_ans";
+let globalShareData = null;
+let shareUrl = "";
+const isWeChatBrowser = /MicroMessenger/i.test(navigator.userAgent);
+
+//数组打乱
+function shuffle(arr){
+  const temp = [...arr];
+  for(let i=temp.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [temp[i],temp[j]] = [temp[j],temp[i]];
+  }
+  return temp;
+}
+
+//保存答案到localStorage
+function saveAnswerToLocal(){
+  const obj = {};
+  questionData.forEach(q=>{
+    const el = document.querySelector(`input[name="${q.qid}"]:checked`);
+    if(el) obj[q.qid] = el.value;
+  })
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(obj));
+}
+
+//读取本地答案回填
+function restoreAnswerFromLocal(){
+  const str = localStorage.getItem(STORAGE_KEY);
+  if(!str) return;
+  try{
+    const obj = JSON.parse(str);
+    for(const key in obj){
+      const radio = document.querySelector(`input[name="${key}"][value="${obj[key]}"]`);
+      if(radio) radio.checked = true;
+    }
+  }catch(e){}
+}
+
+//渲染题目，索引生成题号
+function renderQuestions(){
+  const wrap = document.getElementById("qList");
+  wrap.innerHTML = "";
+  questionData.forEach((q,idx)=>{
+    const shuffledOpts = shuffle(q.opts);
+    const qDiv = document.createElement("div");
+    qDiv.className = "q";
+    qDiv.innerHTML = `
+      <div class="q-title">
+        <span class="q-index">${idx+1}</span>
+        <span>${q.title}</span>
+      </div>
+      ${shuffledOpts.map(opt=>`
+        <label class="opt">
+          <input type="radio" name="${q.qid}" value="${opt.val}" onchange="handleOptionChange()">
+          <span>${opt.text}</span>
+        </label>
+      `).join("")}
+    `;
+    wrap.appendChild(qDiv);
+  })
+  restoreAnswerFromLocal();
+  updateProgress();
+}
+
+function handleOptionChange(){
+  updateProgress();
+  saveAnswerToLocal();
+}
+
+//更新进度
+function updateProgress(){
+  let count = 0;
+  for(let i=1;i<=18;i++){
+    if(document.querySelector(`input[name="q${i}"]:checked`)) count++;
+  }
+  document.getElementById("progressText").innerText = `${count} / 18`;
+  document.getElementById("progressBar").style.width = (count/18*100)+"%";
+}
+
+//清空全部作答，清除本地存储
+function clearAllAnswer(){
+  localStorage.removeItem(STORAGE_KEY);
+  document.querySelectorAll('input[type="radio"]').forEach(r=>r.checked=false);
+  updateProgress();
+  document.getElementById("res").style.display="none";
+}
+
+//返回答题页，保留作答
+function backToQuestion(){
+  document.getElementById("res").style.display="none";
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+//生成测评结果【标准定时器防抖】
+function calc(){
+  console.log("点击生成结果按钮触发calc");
+  if(calcTimer !== null){
+    clearTimeout(calcTimer);
+  }
+  calcTimer = setTimeout(()=>{
+    //检查全部作答
+    let answeredCount = 0;
+    for(let i=1;i<=18;i++){
+      if(document.querySelector(`input[name="q${i}"]:checked`)) answeredCount++;
+    }
+    if(answeredCount < 18){
+      alert(`还有 ${18 - answeredCount} 道题目尚未作答，请完成全部题目后再生成结果！`);
+      return;
+    }
+
+    //计算各维度得分
+    let dimScores = [0,0,0,0,0,0];
+    for(let d=0;d<6;d++){
+      dimConfig[d].qs.forEach(qNum=>{
+        const radio = document.querySelector(`input[name="q${qNum}"]:checked`);
+        dimScores[d] += parseInt(radio.value);
+      })
+    }
+
+    const maxScore = Math.max(...dimScores);
+    // 取得分等于maxScore的所有维度，支持并列最高分
+    const topDimList = [];
+    for(let d=0;d<6;d++){
+      if(dimScores[d] === maxScore){
+        topDimList.push({dim:dimConfig[d], score:dimScores[d]});
+      }
+    }
+
+    renderChartSafe(dimScores);
+
+    //保存分享全局数据（无敏感案件）
+    globalShareData = {
+      scores:dimScores,
+      topIndexList: topDimList.map(t=>{
+        return dimConfig.findIndex(x=>x.name === t.dim.name);
+      }),
+      topNames:topDimList.map(t=>t.dim.name),
+      topImprove:topDimList.map(t=>t.dim.improve)
+    };
+
+    //渲染全部维度分数文本列表
+    let scoreHtml = "<h4 style='margin-bottom:10px;'>📊六大维度得分（满分12）</h4>";
+    for(let d=0;d<6;d++){
+      scoreHtml += `<div class="score-item"><span>${dimConfig[d].name}</span><span>${dimScores[d]} / 12</span></div>`;
+    }
+    document.getElementById("scoreBox").innerHTML = scoreHtml;
+
+    //统一阈值：<=4低风险；5‑8中风险；>=9高风险；maxScore<=4进入绿色好评卡片
+    let content = "";
+    if(maxScore <=4){
+      content += `
+      <div class="good-card">
+          <h3 class="good-title">🎉 满分好评！极致廉洁人格，心态超级稳健</h3>
+          <p>恭喜你！你的六大风险维度均处于极低水平，无任何廉洁隐患。你始终坚守公私边界、敬畏规矩、心态平和、自律清醒，拥有极其难得的正向职业人格，初心不改、底线牢固，是非常优秀的自律从业者！</p>
+          <div class="suggest-card">
+              <strong>持续精进建议：</strong>保持当下的自律状态与平和心态，继续坚守初心、慎终如始，长期维持严谨、清正、通透的职业状态，稳步成长、行稳致远！
+          </div>
+      </div>
+      `;
+    }else{
+      content += `<h3 style="margin-bottom:12px;color:#c53c3c;">⚠️ 本次测评核心风险维度（并列共${topDimList.length}项）</h3>`;
+      topDimList.forEach(item=>{
+        let caseShow;
+        const s = item.score;
+        if(s <=4) caseShow = item.dim.caseLow;
+        else if(s <=8) caseShow = item.dim.caseMid;
+        else caseShow = item.dim.caseHigh;
+
+        content += `
+        <div class="case-card">
+          <h3 class="case-title">${item.dim.name}（得分${item.score}/12）</h3>
+          <p><strong>心理特征：</strong>${item.dim.psych}</p>
+          <p style="margin-top:8px;"><strong>国网系统对标警示案例：</strong>${caseShow}</p>
+          <div class="suggest-card">
+              <strong>✅ 正向改进鼓励：</strong>${item.dim.improve}</strong>
+          </div>
+          <div class="warn-text">
+              <strong>❗ 底线警示提醒：</strong>${item.dim.warn}
+          </div>
+        </div>
+        `;
+      })
+    }
+
+    content += `
+    <div class="summary">
+    <strong>测评小结：</strong>本测试为趣味心理倾向自测，仅用于自我觉察、正向纠偏。人人都有细微人格倾向，及时发现、主动整改、坚守本心，就能终身守住底线、安稳前行！
+    </div>
+    `;
+    document.getElementById("resultContent").innerHTML = content;
+    document.getElementById("res").style.display="block";
+    window.scrollTo({top:document.getElementById("res").offsetTop-40,behavior:"smooth"});
+  },200);
+}
+
+//Chart.js加载失败降级
+function renderChartSafe(scores){
+  const wrap = document.getElementById("chartWrap");
+  if(typeof Chart === "undefined"){
+    wrap.innerHTML = `<div class="no-chart-tip">⚠️ 图表组件加载失败，仅文本结果可用</div>`;
+    return;
+  }
+  wrap.innerHTML = `<canvas id="radarChart"></canvas>`;
+  const ctx = document.getElementById('radarChart').getContext('2d');
+  if(chartIns) chartIns.destroy();
+  const labels = dimConfig.map(d=>d.label);
+  chartIns = new Chart(ctx, {
+    type: 'radar',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: "个人风险指数",
+        data: scores,
+        backgroundColor: "rgba(116, 148, 200, 0.2)",
+        borderColor: "rgba(116, 148, 200, 0.8)",
+        borderWidth:2,
+        pointBackgroundColor:"#7494c8"
+      }]
+    },
+    options: {
+      scales:{
+        r:{
+          min:0,max:12,
+          ticks:{display:false},
+          grid:{color:"rgba(200,210,230,0.4)"},
+          pointLabels:{
+            font:{size:12}
+          }
+        }
+      },
+      plugins:{legend:{display:true,position:"top"}}
+    }
+  })
+}
+
+// =========分享弹窗、链接、图片、二维码逻辑============
+function openShareModal(){
+  if(!globalShareData){
+    alert("请先完成测评，生成结果后再分享！");
+    return;
+  }
+  document.getElementById("shareMask").style.display="flex";
+  //【关键修复】使用数字索引代替中文，缩短URL，解决二维码超长渲染失败
+  const base = location.origin + location.pathname;
+  const scoresStr = globalShareData.scores.join(",");
+  const idxStr = globalShareData.topIndexList.join(",");
+  shareUrl = `${base}?share=1&idx=${idxStr}&s=${scoresStr}`;
+
+  document.getElementById("shareLinkText").innerText = "点击下方复制按钮获取完整分享链接";
+  document.getElementById("copyTextarea").value = shareUrl;
+
+  const qrWrap = document.getElementById("qrcodeDom");
+  qrWrap.innerHTML = "<div>二维码生成中...</div>";
+  try{
+    new QRCode(qrWrap,{
+      text:shareUrl,
+      width:160,
+      height:160,
+      correctLevel:QRCode.CorrectLevel.L
+    });
+  }catch(e){
+    qrWrap.innerHTML = "<div style='color:#888'>二维码生成失败，请复制链接分享</div>";
+  }
+}
+
+//点击黑色遮罩关闭弹窗
+function closeShareModalByMask(e){
+  if(e.target.id === "shareMask"){
+    closeShareModal();
+  }
+}
+
+function closeShareModal(){
+  document.getElementById("shareMask").style.display="none";
+}
+
+async function copyShareLink(){
+  try{
+    await navigator.clipboard.writeText(shareUrl);
+    alert("✅分享链接复制成功，可以粘贴发给好友！");
+  }catch(e){
+    const ta = document.getElementById("copyTextarea");
+    ta.focus();
+    ta.select();
+    alert("自动复制失败，请手动复制文本框内链接！");
+  }
+}
+
+//生成脱敏分享图片（不含落马官员案例）
+async function genShareImage(){
+  if(typeof html2canvas === "undefined"){
+    alert("图片组件加载失败，无法生成图片，请复制链接分享");
+    return;
+  }
+  const canvasWrap = document.getElementById("shareCanvasWrap");
+  canvasWrap.innerHTML = `<div style="max-width:100%;width:420px;padding:20px;background:#fffbf1;border-radius:12px;margin:0 auto;">
+    <h3 style="text-align:center;color:#3b2f1a;margin-bottom:12px">廉洁人格六边形测评分享</h3>
+    <p><strong>核心人格类型：</strong>${globalShareData.topNames.join("、")}</p>
+    <p><strong>六大维度分数：</strong>${globalShareData.scores.map(s=>`${s}/12`).join("，")}</p>
+    <div style="margin:10px 0;">
+        <strong>改进提升方向：</strong>
+        <div>${globalShareData.topImprove.map(s=>`<div>•${s}</div>`).join("")}</div>
+    </div>
+    <p style="font-size:12px;color:#777;text-align:center;margin-top:12px;">扫码参与测评</p>
+    <div id="miniQr" style="text-align:center;"></div>
+  </div>`;
+
+  const miniQrDom = document.getElementById("miniQr");
+  miniQrDom.innerHTML = "";
+  try{
+    new QRCode(miniQrDom,{
+      text:shareUrl,
+      width:120,
+      height:120,
+      correctLevel:QRCode.CorrectLevel.L
+    });
+  }catch(err){
+    miniQrDom.innerText="二维码异常";
+  }
+  await new Promise(res=>setTimeout(res,1200));
+
+  const canvas = await html2canvas(canvasWrap,{
+    useCORS:true,
+    backgroundColor:"#fffbf1",
+    scale: window.devicePixelRatio
+  });
+
+  if(isWeChatBrowser){
+    alert("微信浏览器不支持直接下载！请长按下方生成的图片，保存到相册");
+    canvasWrap.appendChild(canvas);
+  }else{
+    const a = document.createElement("a");
+    a.download = "廉洁测评分享.png";
+    a.href = canvas.toDataURL("image/png");
+    a.click();
+  }
+}
+
+//解析url分享参数：读取数字索引，反查维度名称与改进文本
+function parseShareQuery(){
+  const params = new URLSearchParams(location.search);
+  const isShare = params.get("share");
+  if(isShare !== "1") return false;
+  const idxRaw = params.get("idx");
+  const scoresRaw = params.get("s");
+  if(!idxRaw || !scoresRaw) return false;
+
+  const idxArr = idxRaw.split(",").map(Number);
+  const scoresArr = scoresRaw.split(",").map(Number);
+
+  const topNames = [];
+  const improveList = [];
+  idxArr.forEach(num=>{
+    if(dimConfig[num]){
+      topNames.push(dimConfig[num].name);
+      improveList.push(dimConfig[num].improve);
+    }
+  });
+
+  document.getElementById("mainTestPage").style.display="none";
+  document.getElementById("sharePreviewPage").style.display="block";
+  const previewDom = document.getElementById("sharePreviewContent");
+  previewDom.innerHTML = `
+  <h4 style="margin-bottom:10px">👤他人测评结果预览（仅脱敏分享内容）</h4>
+  <p><strong>核心风险人格：</strong>${topNames.join("；")}</p>
+  <p style="margin:8px 0;"><strong>六大维度得分(满分12)：</strong>${scoresArr.map(s=>`${s}/12`).join("，")}</p>
+  <div style="margin-top:10px;">
+    <strong>改进提升方向：</strong>
+    <div>${improveList.map(s=>`<div>•${s}</div>`).join("")}</div>
+  </div>
+  <div style="margin-top:12px;padding:10px;background:#fff3e0;border-radius:8px;">
+    <p>⚠提示：该页面仅为他人分享预览，<b>不含原始警示案例</b>。点击下方按钮进入完整测评，测测你自己。</p>
+  </div>
+  `;
+  return true;
+}
+
+//从分享预览切回主测评页面
+function hideSharePreview(){
+  history.replaceState({},document.title,location.pathname);
+  document.getElementById("sharePreviewPage").style.display="none";
+  document.getElementById("mainTestPage").style.display="block";
+  renderQuestions();
+}
+
+window.onload = function(){
+  const isShareMode = parseShareQuery();
+  if(!isShareMode){
+    renderQuestions();
+  }
+}
+</script>
+</body>
+</html>
