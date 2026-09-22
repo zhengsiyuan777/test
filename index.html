@@ -865,7 +865,7 @@ function calc(){
       scoreHtml += `<div class="score-item"><span>${dimConfig[d].name}</span><span>${dimScores[d]} / 12</span></div>`;
     }
     document.getElementById("scoreBox").innerHTML = scoreHtml;
-    //统一阈值：<=4低风险；5‑8中风险；>=9高风险；maxScore<=4进入绿色好评卡片
+    //统一阈值：<=6低风险；7‑9中风险；>=10高风险；maxScore<=4进入绿色好评卡片
     let content = "";
     if(maxScore <=4){
       content += `
@@ -882,8 +882,8 @@ function calc(){
       topDimList.forEach(item=>{
         let caseShow;
         const s = item.score;
-        if(s <=4) caseShow = item.dim.caseLow;
-        else if(s <=8) caseShow = item.dim.caseMid;
+        if(s <=6) caseShow = item.dim.caseLow;
+        else if(s <=9) caseShow = item.dim.caseMid;
         else caseShow = item.dim.caseHigh;
         content += `
         <div class="case-card">
