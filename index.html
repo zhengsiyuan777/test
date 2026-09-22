@@ -732,6 +732,10 @@ const STORAGE_KEY = "lian_jie_test_ans";
 let globalShareData = null;
 let shareUrl = "";
 const isWeChatBrowser = /MicroMessenger/i.test(navigator.userAgent);
+//满分好评文案（低风险/无风险时使用，不涉及任何警示案例）
+const EXCELLENT_TITLE = "满分好评！极致廉洁人格，心态超级稳健";
+const EXCELLENT_COMMENT = "恭喜你！你的六大风险维度均处于极低水平，无任何廉洁隐患。你始终坚守公私边界、敬畏规矩、心态平和、自律清醒，拥有极其难得的正向职业人格，初心不改、底线牢固，是非常优秀的自律从业者！";
+const EXCELLENT_ADVICE = "保持当下的自律状态与平和心态，继续坚守初心、慎终如始，长期维持严谨、清正、通透的职业状态，稳步成长、行稳致远！";
 //数组打乱
 function shuffle(arr){
   const temp = [...arr];
@@ -848,6 +852,7 @@ function calc(){
     //保存分享全局数据（无敏感案件）
     globalShareData = {
       scores:dimScores,
+      isExcellent: maxScore <= 4,
       topIndexList: topDimList.map(t=>{
         return dimConfig.findIndex(x=>x.name === t.dim.name);
       }),
@@ -865,10 +870,10 @@ function calc(){
     if(maxScore <=4){
       content += `
       <div class="good-card">
-          <h3 class="good-title">🎉 满分好评！极致廉洁人格，心态超级稳健</h3>
-          <p>恭喜你！你的六大风险维度均处于极低水平，无任何廉洁隐患。你始终坚守公私边界、敬畏规矩、心态平和、自律清醒，拥有极其难得的正向职业人格，初心不改、底线牢固，是非常优秀的自律从业者！</p>
+          <h3 class="good-title">🎉 ${EXCELLENT_TITLE}</h3>
+          <p>${EXCELLENT_COMMENT}</p>
           <div class="suggest-card">
-              <strong>持续精进建议：</strong>保持当下的自律状态与平和心态，继续坚守初心、慎终如始，长期维持严谨、清正、通透的职业状态，稳步成长、行稳致远！
+              <strong>持续精进建议：</strong>${EXCELLENT_ADVICE}
           </div>
       </div>
       `;
@@ -991,18 +996,22 @@ async function genShareImage(){
   }
   const canvasWrap = document.getElementById("shareCanvasWrap");
   canvasWrap.style.display = "block";
+  const isEx = !!(globalShareData && globalShareData.isExcellent);
   canvasWrap.innerHTML = `<div id="shareImageCard" style="max-width:100%;width:420px;padding:22px 22px 18px;background:#fffbf1;border-radius:16px;margin:0 auto;box-shadow:0 10px 30px rgba(80,50,20,0.15);position:relative;">
     <h3 style="text-align:center;color:#3b2f1a;font-size:17px;font-weight:800;letter-spacing:2px;margin-bottom:4px;">廉洁人格六边形测评分享</h3>
     <p style="text-align:center;font-size:11px;color:#9a8a6a;letter-spacing:3px;margin-bottom:16px;">防微杜渐 · 慎独慎微</p>
     <div style="background:#fff;border:1px solid #f0e6d0;border-radius:10px;padding:10px 14px;margin-bottom:10px;">
-      <p style="font-size:13px;color:#5a4a28;line-height:1.6;"><span style="color:#9a8a6a;">核心人格类型</span>　<strong>${globalShareData.topNames.join("、")}</strong></p>
+      <p style="font-size:13px;color:#5a4a28;line-height:1.6;"><span style="color:#9a8a6a;">${isEx ? "人格评定" : "核心人格类型"}</span>　<strong>${isEx ? "极致廉洁人格 · 满分好评" : globalShareData.topNames.join("、")}</strong></p>
     </div>
     <div style="background:#fff;border:1px solid #f0e6d0;border-radius:10px;padding:10px 14px;margin-bottom:10px;">
       <p style="font-size:13px;color:#5a4a28;line-height:1.6;"><span style="color:#9a8a6a;">六大维度分数</span>　${globalShareData.scores.map(s=>`<strong style="color:#a0522d;">${s}</strong>/12`).join(" · ")}</p>
     </div>
     <div style="background:#fff;border:1px solid #f0e6d0;border-radius:10px;padding:10px 14px;margin-bottom:14px;">
-      <p style="font-size:13px;color:#5a4a28;font-weight:700;margin-bottom:6px;">改进提升方向</p>
-      <div style="font-size:12px;color:#7a6a4a;line-height:1.9;">${globalShareData.topImprove.map(s=>`<div>• ${s}</div>`).join("")}</div>
+      <p style="font-size:13px;color:#5a4a28;font-weight:700;margin-bottom:6px;">${isEx ? "优秀评语" : "改进提升方向"}</p>
+      ${isEx
+        ? `<div style="font-size:12px;color:#7a6a4a;line-height:1.9;">${EXCELLENT_COMMENT}</div>
+           <div style="font-size:12px;color:#7a6a4a;line-height:1.9;margin-top:6px;"><strong>持续精进建议：</strong>${EXCELLENT_ADVICE}</div>`
+        : `<div style="font-size:12px;color:#7a6a4a;line-height:1.9;">${globalShareData.topImprove.map(s=>`<div>• ${s}</div>`).join("")}</div>`}
     </div>
     <div style="text-align:center;border-top:1px dashed #e2d4b8;padding-top:14px;">
       <div id="qrPlaceHolder" style="width:112px;height:112px;margin:0 auto 6px;padding:8px;background:#fff;border:1px solid #e6dcc4;border-radius:14px;box-shadow:0 8px 20px rgba(139,90,43,0.12);display:flex;align-items:center;justify-content:center;overflow:hidden;">
@@ -1067,6 +1076,7 @@ function parseShareQuery(){
   if(!idxRaw || !scoresRaw) return false;
   const idxArr = idxRaw.split(",").map(Number);
   const scoresArr = scoresRaw.split(",").map(Number);
+  const isEx = Math.max(...scoresArr) <= 4;
   const topNames = [];
   const improveList = [];
   idxArr.forEach(num=>{
@@ -1080,12 +1090,19 @@ function parseShareQuery(){
   const previewDom = document.getElementById("sharePreviewContent");
   previewDom.innerHTML = `
   <h4 style="margin-bottom:10px">👤他人测评结果预览（仅脱敏分享内容）</h4>
-  <p><strong>核心风险人格：</strong>${topNames.join("；")}</p>
-  <p style="margin:8px 0;"><strong>六大维度得分(满分12)：</strong>${scoresArr.map(s=>`${s}/12`).join("，")}</p>
-  <div style="margin-top:10px;">
-    <strong>改进提升方向：</strong>
-    <div>${improveList.map(s=>`<div>•${s}</div>`).join("")}</div>
-  </div>
+  ${isEx
+    ? `<p><strong>人格评定：</strong>极致廉洁人格 · 满分好评</p>
+       <p style="margin:8px 0;"><strong>六大维度得分(满分12)：</strong>${scoresArr.map(s=>`${s}/12`).join("，")}</p>
+       <div style="margin-top:10px;background:#eef7f1;border:1px solid #cfe6d8;border-radius:8px;padding:10px 12px;color:#1f4d35;">
+         <p style="margin-bottom:6px;"><strong>优秀评语：</strong>${EXCELLENT_COMMENT}</p>
+         <p><strong>持续精进建议：</strong>${EXCELLENT_ADVICE}</p>
+       </div>`
+    : `<p><strong>核心风险人格：</strong>${topNames.join("；")}</p>
+       <p style="margin:8px 0;"><strong>六大维度得分(满分12)：</strong>${scoresArr.map(s=>`${s}/12`).join("，")}</p>
+       <div style="margin-top:10px;">
+         <strong>改进提升方向：</strong>
+         <div>${improveList.map(s=>`<div>•${s}</div>`).join("")}</div>
+       </div>`}
   <div style="margin-top:12px;padding:10px;background:#fff3e0;border-radius:8px;">
     <p>⚠提示：该页面仅为他人分享预览，<b>不含原始警示案例</b>。点击下方按钮进入完整测评，测测你自己。</p>
   </div>
