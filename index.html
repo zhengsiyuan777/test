@@ -741,6 +741,8 @@ const STORAGE_KEY = "lian_jie_test_ans";
 let globalShareData = null;
 let shareUrl = "";
 const isWeChatBrowser = /MicroMessenger/i.test(navigator.userAgent);
+let qrMainInstance = null;
+let qrMiniInstance = null;
 
 //数组打乱
 function shuffle(arr){
@@ -978,6 +980,11 @@ function openShareModal(){
     alert("请先完成测评，生成结果后再分享！");
     return;
   }
+  // 销毁旧实例，清空容器，防止多次打开叠加
+  if(qrMainInstance && typeof qrMainInstance.clear === "function") qrMainInstance.clear();
+  qrMainInstance = null;
+  document.getElementById("qrcodeDom").innerHTML = "";
+
   document.getElementById("shareMask").style.display="flex";
   //【关键修复】使用数字索引代替中文，缩短URL，解决二维码超长渲染失败
   const base = location.origin + location.pathname;
@@ -990,16 +997,20 @@ function openShareModal(){
 
   const qrWrap = document.getElementById("qrcodeDom");
   qrWrap.innerHTML = "<div>二维码生成中...</div>";
-  try{
-    new QRCode(qrWrap,{
-      text:shareUrl,
-      width:160,
-      height:160,
-      correctLevel:QRCode.CorrectLevel.L
-    });
-  }catch(e){
-    qrWrap.innerHTML = "<div style='color:#888'>二维码生成失败，请复制链接分享</div>";
-  }
+  // 延时等弹窗DOM渲染完成后再生成二维码
+  setTimeout(()=>{
+    try{
+      qrMainInstance = new QRCode(qrWrap,{
+        text:shareUrl,
+        width:160,
+        height:160,
+        correctLevel:QRCode.CorrectLevel.L
+      });
+    }catch(e){
+      qrWrap.innerHTML = "<div style='color:#888'>二维码生成失败，请复制链接分享</div>";
+      console.error("QRCode异常：",e);
+    }
+  },250);
 }
 
 //点击黑色遮罩关闭弹窗
@@ -1010,6 +1021,10 @@ function closeShareModalByMask(e){
 }
 
 function closeShareModal(){
+  // 关闭时销毁二维码实例，清空容器
+  if(qrMainInstance && typeof qrMainInstance.clear === "function") qrMainInstance.clear();
+  qrMainInstance = null;
+  document.getElementById("qrcodeDom").innerHTML = "";
   document.getElementById("shareMask").style.display="none";
 }
 
@@ -1046,8 +1061,11 @@ async function genShareImage(){
 
   const miniQrDom = document.getElementById("miniQr");
   miniQrDom.innerHTML = "";
+  // 销毁旧的mini QR实例
+  if(qrMiniInstance && typeof qrMiniInstance.clear === "function") qrMiniInstance.clear();
+  qrMiniInstance = null;
   try{
-    new QRCode(miniQrDom,{
+    qrMiniInstance = new QRCode(miniQrDom,{
       text:shareUrl,
       width:120,
       height:120,
@@ -1055,6 +1073,7 @@ async function genShareImage(){
     });
   }catch(err){
     miniQrDom.innerText="二维码异常";
+    console.error("mini qrcode err",err);
   }
   await new Promise(res=>setTimeout(res,1200));
 
