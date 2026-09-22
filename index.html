@@ -1034,8 +1034,17 @@ async function genShareImage(){
     });
 
     if(isWeChatBrowser){
-      alert("微信浏览器不支持直接下载！请长按下方生成的图片，保存到相册");
-      canvasWrap.appendChild(canvas);
+      alert("微信浏览器不支持直接下载！请长按下方图片，保存到相册");
+      // 微信端将 canvas 转为 img，长按才能弹出保存图片菜单
+      const shareImg = new Image();
+      shareImg.src = canvas.toDataURL("image/png");
+      shareImg.style.width = "100%";
+      shareImg.style.maxWidth = "420px";
+      shareImg.style.display = "block";
+      shareImg.style.margin = "0 auto";
+      shareImg.style.borderRadius = "12px";
+      canvasWrap.innerHTML = "";
+      canvasWrap.appendChild(shareImg);
     }else{
       const a = document.createElement("a");
       a.download = "廉洁测评分享.png";
