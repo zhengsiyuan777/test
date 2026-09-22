@@ -314,12 +314,6 @@
   .share-preview-card{
     background:#fff9ec;border:1px solid #d8c8a8;border-radius:16px;padding:20px;margin:12px 0;
   }
-  .qrcode-wrap{
-    text-align:center;margin:16px 0;
-  }
-  .qrcode-wrap img{
-    max-width:160px;
-  }
   #shareCanvasWrap{
     background:#fff9ec;padding:16px;border-radius:12px;
   }
@@ -416,10 +410,7 @@
 <div class="mask" id="shareMask" onclick="closeShareModalByMask(event)">
   <div class="share-modal" onclick="event.stopPropagation()">
     <h3 class="text-xl font-bold mb-3">分享我的测评结果</h3>
-    <p class="text-sm text-gray-600 mb-2">说明：分享图片已过滤案件敏感信息，仅展示人格类型、分数与改进建议。</p>
-    <div class="qrcode-wrap">
-      <img id="staticQrImg" src="https://raw.githubusercontent.com/zhengsiyuan777/pic/main/5de31b2da4cee1f26d18751f065c96a0.jpg" alt="测评二维码">
-    </div>
+    <p class="text-sm text-gray-600 mb-2">说明：复制下方链接分享测评结果；点击生成分享图片，二维码将自动排版到图片右下角。</p>
     <div>
       <p>🔗分享链接：</p>
       <div class="share-link-box" id="shareLinkText">点击下方复制按钮获取完整分享链接</div>
@@ -692,7 +683,6 @@ const STORAGE_KEY = "lian_jie_test_ans";
 let globalShareData = null;
 let shareUrl = "";
 const isWeChatBrowser = /MicroMessenger/i.test(navigator.userAgent);
-
 //数组打乱
 function shuffle(arr){
   const temp = [...arr];
@@ -917,7 +907,6 @@ function openShareModal(){
   const scoresStr = globalShareData.scores.join(",");
   const idxStr = globalShareData.topIndexList.join(",");
   shareUrl = `${base}?share=1&idx=${idxStr}&s=${scoresStr}`;
-
   document.getElementById("shareLinkText").innerText = "点击下方复制按钮获取完整分享链接";
   document.getElementById("copyTextarea").value = shareUrl;
   maskDom.style.display="flex";
@@ -945,24 +934,24 @@ async function copyShareLink(){
   }
 }
 
-//生成脱敏分享图片，模板内嵌入静态二维码图片
+//生成脱敏分享图片，二维码放到右下角
 async function genShareImage(){
   if(typeof html2canvas === "undefined"){
     alert("图片组件加载失败，无法生成图片，请复制链接分享");
     return;
   }
   const canvasWrap = document.getElementById("shareCanvasWrap");
-  canvasWrap.innerHTML = `<div style="max-width:100%;width:420px;padding:20px;background:#fffbf1;border-radius:12px;margin:0 auto;">
+  canvasWrap.innerHTML = `<div style="max-width:100%;width:420px;padding:20px;background:#fffbf1;border-radius:12px;margin:0 auto;position:relative;">
     <h3 style="text-align:center;color:#3b2f1a;margin-bottom:12px">廉洁人格六边形测评分享</h3>
     <p><strong>核心人格类型：</strong>${globalShareData.topNames.join("、")}</p>
-    <p><strong>六大维度分数：</strong>${globalShareData.scores.map(s=>`${s}/12`).join("，")}</p>
-    <div style="margin:10px 0;">
+    <p style="margin-top:8px;"><strong>六大维度分数：</strong>${globalShareData.scores.map(s=>`${s}/12`).join("，")}</p>
+    <div style="margin:12px 60px 12px 0;">
         <strong>改进提升方向：</strong>
-        <div>${globalShareData.topImprove.map(s=>`<div>•${s}</div>`).join("")}</div>
+        <div style="margin-top:6px;">${globalShareData.topImprove.map(s=>`<div style="margin-bottom:4px;">•${s}</div>`).join("")}</div>
     </div>
-    <p style="font-size:12px;color:#777;text-align:center;margin-top:12px;">扫码参与测评</p>
-    <div style="text-align:center;">
-      <img src="https://raw.githubusercontent.com/zhengsiyuan777/pic/main/5de31b2da4cee1f26d18751f065c96a0.jpg" style="width:120px;" alt="二维码">
+    <div style="position:absolute;right:18px;bottom:18px;text-align:center;">
+      <img src="https://raw.githubusercontent.com/zhengsiyuan777/pic/main/5de31b2da4cee1f26d18751f065c96a0.jpg" style="width:96px;height:96px;" alt="二维码">
+      <p style="font-size:11px;color:#777;margin-top:4px;">扫码参与测评</p>
     </div>
   </div>`;
 
