@@ -6,7 +6,7 @@
 <title>廉洁人格六边形趣味心理测评</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+<!-- 已移除动态二维码库，使用外部静态图片 -->
 <style>
   * {
     margin: 0;
@@ -317,6 +317,9 @@
   .qrcode-wrap{
     text-align:center;margin:16px 0;
   }
+  .qrcode-wrap img{
+    max-width:160px;
+  }
   #shareCanvasWrap{
     background:#fff9ec;padding:16px;border-radius:12px;
   }
@@ -415,8 +418,7 @@
     <h3 class="text-xl font-bold mb-3">分享我的测评结果</h3>
     <p class="text-sm text-gray-600 mb-2">说明：分享图片已过滤案件敏感信息，仅展示人格类型、分数与改进建议。</p>
     <div class="qrcode-wrap">
-      <div id="qrcodeDom"></div>
-      <div id="shareCanvasWrap"></div>
+      <img id="staticQrImg" src="https://raw.githubusercontent.com/zhengsiyuan777/pic/main/5de31b2da4cee1f26d18751f065c96a0.jpg" alt="测评二维码">
     </div>
     <div>
       <p>🔗分享链接：</p>
@@ -690,9 +692,6 @@ const STORAGE_KEY = "lian_jie_test_ans";
 let globalShareData = null;
 let shareUrl = "";
 const isWeChatBrowser = /MicroMessenger/i.test(navigator.userAgent);
-// 【新增】保存QR实例，用于销毁
-let qrMainInstance = null;
-let qrMiniInstance = null;
 
 //数组打乱
 function shuffle(arr){
@@ -906,29 +905,14 @@ function renderChartSafe(scores){
     }
   })
 }
-// =========分享弹窗、链接、图片、二维码逻辑【修复二维码+写死公网base】============
-//销毁QR实例
-function destroyQR(instance){
-    if(instance && typeof instance.clear === "function"){
-        instance.clear();
-    }
-}
-
+// =========分享弹窗、链接、图片逻辑（静态二维码，不再动态生成）============
 function openShareModal(){
   if(!globalShareData){
     alert("请先完成测评，生成结果后再分享！");
     return;
   }
   const maskDom = document.getElementById("shareMask");
-  const qrWrap = document.getElementById("qrcodeDom");
-  //销毁旧实例，清空容器
-  destroyQR(qrMainInstance);
-  qrMainInstance = null;
-  qrWrap.innerHTML = "<div>二维码生成中...</div>";
-
-  maskDom.style.display="flex";
-
-  //=====写死固定部署域名，不再动态获取本地地址=====
+  //写死公网基础地址
   const base = "https://zhengsiyuan777.github.io/test/";
   const scoresStr = globalShareData.scores.join(",");
   const idxStr = globalShareData.topIndexList.join(",");
@@ -936,20 +920,7 @@ function openShareModal(){
 
   document.getElementById("shareLinkText").innerText = "点击下方复制按钮获取完整分享链接";
   document.getElementById("copyTextarea").value = shareUrl;
-
-  setTimeout(()=>{
-    try{
-        qrMainInstance = new QRCode(qrWrap,{
-          text:shareUrl,
-          width:160,
-          height:160,
-          correctLevel:QRCode.CorrectLevel.L
-        });
-    }catch(e){
-        qrWrap.innerHTML = "<div style='color:#888'>二维码生成失败，请复制链接分享</div>";
-        console.error("QRCode异常：",e);
-    }
-  },250);
+  maskDom.style.display="flex";
 }
 
 //点击黑色遮罩关闭弹窗
@@ -959,9 +930,6 @@ function closeShareModalByMask(e){
   }
 }
 function closeShareModal(){
-  destroyQR(qrMainInstance);
-  qrMainInstance = null;
-  document.getElementById("qrcodeDom").innerHTML = "";
   document.getElementById("shareMask").style.display="none";
 }
 
@@ -977,7 +945,7 @@ async function copyShareLink(){
   }
 }
 
-//生成脱敏分享图片（不含落马官员案例）
+//生成脱敏分享图片，模板内嵌入静态二维码图片
 async function genShareImage(){
   if(typeof html2canvas === "undefined"){
     alert("图片组件加载失败，无法生成图片，请复制链接分享");
@@ -993,23 +961,11 @@ async function genShareImage(){
         <div>${globalShareData.topImprove.map(s=>`<div>•${s}</div>`).join("")}</div>
     </div>
     <p style="font-size:12px;color:#777;text-align:center;margin-top:12px;">扫码参与测评</p>
-    <div id="miniQr" style="text-align:center;"></div>
+    <div style="text-align:center;">
+      <img src="https://raw.githubusercontent.com/zhengsiyuan777/pic/main/5de31b2da4cee1f26d18751f065c96a0.jpg" style="width:120px;" alt="二维码">
+    </div>
   </div>`;
-  const miniQrDom = document.getElementById("miniQr");
-  miniQrDom.innerHTML = "";
-  destroyQR(qrMiniInstance);
-  qrMiniInstance=null;
-  try{
-    qrMiniInstance = new QRCode(miniQrDom,{
-      text:shareUrl,
-      width:120,
-      height:120,
-      correctLevel:QRCode.CorrectLevel.L
-    });
-  }catch(err){
-    miniQrDom.innerText="二维码异常";
-    console.error("mini qrcode err",err);
-  }
+
   await new Promise(res=>setTimeout(res,1200));
   const canvas = await html2canvas(canvasWrap,{
     useCORS:true,
@@ -1049,7 +1005,7 @@ function parseShareQuery(){
   document.getElementById("sharePreviewPage").style.display="block";
   const previewDom = document.getElementById("sharePreviewContent");
   previewDom.innerHTML = `
-  <h4 style="margin-bottom:10px">👤他人测评分享预览（仅脱敏分享内容）</h4>
+  <h4 style="margin-bottom:10px">👤他人测评结果预览（仅脱敏分享内容）</h4>
   <p><strong>核心风险人格：</strong>${topNames.join("；")}</p>
   <p style="margin:8px 0;"><strong>六大维度得分(满分12)：</strong>${scoresArr.map(s=>`${s}/12`).join("，")}</p>
   <div style="margin-top:10px;">
