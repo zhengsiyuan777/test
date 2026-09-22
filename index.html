@@ -6,7 +6,7 @@
 <title>廉洁人格六边形趣味心理测评</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
-<!-- 已移除动态二维码库，使用外部静态图片 -->
+<!-- 分享二维码使用外部静态图片（jsDelivr 代理加速）：https://cdn.jsdelivr.net/gh/zhengsiyuan777/pic@main/5de31b2da4cee1f26d18751f065c96a0.jpg -->
 <style>
   * {
     margin: 0;
@@ -306,22 +306,71 @@
   }
   /*分享弹窗*/
   .mask{
-    position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:999;display:none;align-items:center;justify-content:center;padding:16px;
+    position:fixed;inset:0;background:rgba(60,38,8,0.55);z-index:999;display:none;align-items:center;justify-content:center;padding:16px;
+    backdrop-filter: blur(3px);
   }
   .share-modal{
-    width:100%;max-width:540px;background:#fffbf1;border-radius:20px;padding:24px;max-height:90vh;overflow-y:auto;
+    position:relative;
+    width:100%;max-width:480px;
+    background:linear-gradient(180deg,#fffdf7 0%,#fdf6e8 100%);
+    border:1px solid rgba(139,90,43,0.22);
+    border-radius:22px;
+    padding:30px 26px 24px;
+    max-height:92vh;overflow-y:auto;
+    box-shadow:0 28px 70px rgba(60,35,5,0.35);
+  }
+  .share-close{
+    position:absolute;top:14px;right:14px;
+    width:30px;height:30px;border:none;border-radius:50%;
+    background:rgba(139,90,43,0.1);color:#7a5a30;font-size:14px;cursor:pointer;
+    display:flex;align-items:center;justify-content:center;line-height:1;
+    transition:background .2s ease;
+  }
+  .share-close:hover{background:rgba(139,90,43,0.22);}
+  .share-modal-title{
+    text-align:center;font-size:20px;font-weight:800;color:#3b2f1a;
+    letter-spacing:2px;margin-bottom:6px;
+  }
+  .share-modal-sub{
+    text-align:center;font-size:13px;color:#8a7a5a;margin-bottom:22px;line-height:1.7;
+  }
+  .share-link-card{
+    background:#fff;border:1px solid #eadfc6;border-radius:14px;padding:14px 16px;margin-bottom:12px;
+    box-shadow:0 4px 14px rgba(139,90,43,0.06);
+  }
+  .share-link-label{font-size:13px;font-weight:700;color:#5a4a28;margin-bottom:8px;}
+  .share-link-url{display:flex;align-items:center;gap:12px;}
+  .share-link-url .url-text{flex:1;font-size:12px;color:#8a7a5a;word-break:break-all;line-height:1.6;}
+  .btn-copy{
+    flex-shrink:0;border:none;background:linear-gradient(135deg,#8b5a2b,#a0522d);color:#fff;
+    border-radius:10px;padding:9px 16px;font-size:13px;font-weight:700;cursor:pointer;
+    box-shadow:0 6px 14px rgba(139,90,43,0.25);
+    transition:transform .2s ease;
+  }
+  .btn-copy:hover{transform:translateY(-1px);}
+  textarea.copy-textarea{
+    width:100%;min-height:42px;padding:9px 12px;border-radius:10px;border:1px dashed #d8c8a8;
+    background:#fbf7ec;color:#8a7a5a;font-size:12px;margin-bottom:16px;resize:none;
+  }
+  .btn-gen-image{
+    width:100%;border:none;background:linear-gradient(135deg,#8b5a2b,#a0522d);color:#fff;
+    border-radius:14px;padding:14px;font-size:15px;font-weight:700;letter-spacing:2px;cursor:pointer;
+    box-shadow:0 12px 26px rgba(139,90,43,0.35);
+    transition:transform .2s ease, box-shadow .2s ease;
+  }
+  .btn-gen-image:hover{transform:translateY(-2px);box-shadow:0 16px 30px rgba(139,90,43,0.4);}
+  .share-preview-tip{
+    text-align:center;font-size:12px;color:#a0906c;margin:12px 0 4px;
+  }
+  #shareCanvasWrap{
+    background:transparent;padding:6px 0 2px;border-radius:12px;
+    display:none;
   }
   .share-preview-card{
     background:#fff9ec;border:1px solid #d8c8a8;border-radius:16px;padding:20px;margin:12px 0;
   }
-  #shareCanvasWrap{
-    background:#fff9ec;padding:16px;border-radius:12px;
-  }
   .share-link-box{
     background:#efeadc;padding:10px;border-radius:8px;font-size:13px;margin:10px 0;
-  }
-  textarea.copy-textarea{
-    width:100%;min-height:80px;padding:8px;border-radius:6px;border:1px solid #ccc;margin:8px 0;
   }
   /*分享预览页面（被别人点开分享链接）*/
   #sharePreviewPage{
@@ -409,20 +458,20 @@
 <!--分享弹窗mask -->
 <div class="mask" id="shareMask" onclick="closeShareModalByMask(event)">
   <div class="share-modal" onclick="event.stopPropagation()">
-    <h3 class="text-xl font-bold mb-3">分享我的测评结果</h3>
-    <p class="text-sm text-gray-600 mb-2">说明：复制下方链接分享测评结果；点击生成分享图片，二维码将自动排版到图片右下角。</p>
-    <div>
-      <p>🔗分享链接：</p>
-      <div class="share-link-box" id="shareLinkText">点击下方复制按钮获取完整分享链接</div>
-      <textarea id="copyTextarea" class="copy-textarea" readonly></textarea>
-      <div class="btn-box">
-        <button class="btn btn-submit btn-small" onclick="copyShareLink()">复制链接</button>
-        <button class="btn btn-reset btn-small" onclick="genShareImage()">生成分享图片（保存相册）</button>
+    <button class="share-close" onclick="closeShareModal()" aria-label="关闭">✕</button>
+    <h3 class="share-modal-title">分享我的测评结果</h3>
+    <p class="share-modal-sub">生成专属分享图片或复制链接<br>发给好友一起测测吧</p>
+    <div class="share-link-card">
+      <p class="share-link-label">🔗 分享链接</p>
+      <div class="share-link-url">
+        <span class="url-text" id="shareLinkText">点击下方复制按钮获取完整分享链接</span>
+        <button class="btn-copy" onclick="copyShareLink()">复制链接</button>
       </div>
     </div>
-    <div class="btn-box mt-4">
-      <button class="btn btn-reset" onclick="closeShareModal()">关闭弹窗</button>
-    </div>
+    <textarea id="copyTextarea" class="copy-textarea" readonly></textarea>
+    <button class="btn-gen-image" onclick="genShareImage()">📤 生成分享图片</button>
+    <p class="share-preview-tip">生成的图片显示在下方，长按或点击保存即可分享</p>
+    <div id="shareCanvasWrap"></div>
   </div>
 </div>
 <script>
@@ -837,7 +886,7 @@ function calc(){
           <p><strong>心理特征：</strong>${item.dim.psych}</p>
           <p style="margin-top:8px;"><strong>国网系统对标警示案例：</strong>${caseShow}</p>
           <div class="suggest-card">
-              <strong>✅ 正向改进鼓励：</strong>${item.dim.improve}</strong>
+              <strong>✅ 正向改进鼓励：</strong>${item.dim.improve}
           </div>
           <div class="warn-text">
               <strong>❗ 底线警示提醒：</strong>${item.dim.warn}
@@ -941,34 +990,61 @@ async function genShareImage(){
     return;
   }
   const canvasWrap = document.getElementById("shareCanvasWrap");
-  canvasWrap.innerHTML = `<div style="max-width:100%;width:420px;padding:20px;background:#fffbf1;border-radius:12px;margin:0 auto;position:relative;">
-    <h3 style="text-align:center;color:#3b2f1a;margin-bottom:12px">廉洁人格六边形测评分享</h3>
-    <p><strong>核心人格类型：</strong>${globalShareData.topNames.join("、")}</p>
-    <p style="margin-top:8px;"><strong>六大维度分数：</strong>${globalShareData.scores.map(s=>`${s}/12`).join("，")}</p>
-    <div style="margin:12px 60px 12px 0;">
-        <strong>改进提升方向：</strong>
-        <div style="margin-top:6px;">${globalShareData.topImprove.map(s=>`<div style="margin-bottom:4px;">•${s}</div>`).join("")}</div>
+  canvasWrap.style.display = "block";
+  canvasWrap.innerHTML = `<div id="shareImageCard" style="max-width:100%;width:420px;padding:22px 22px 18px;background:#fffbf1;border-radius:16px;margin:0 auto;box-shadow:0 10px 30px rgba(80,50,20,0.15);position:relative;">
+    <h3 style="text-align:center;color:#3b2f1a;font-size:17px;font-weight:800;letter-spacing:2px;margin-bottom:4px;">廉洁人格六边形测评分享</h3>
+    <p style="text-align:center;font-size:11px;color:#9a8a6a;letter-spacing:3px;margin-bottom:16px;">防微杜渐 · 慎独慎微</p>
+    <div style="background:#fff;border:1px solid #f0e6d0;border-radius:10px;padding:10px 14px;margin-bottom:10px;">
+      <p style="font-size:13px;color:#5a4a28;line-height:1.6;"><span style="color:#9a8a6a;">核心人格类型</span>　<strong>${globalShareData.topNames.join("、")}</strong></p>
     </div>
-    <div style="position:absolute;right:18px;bottom:18px;text-align:center;">
-      <img src="https://raw.githubusercontent.com/zhengsiyuan777/pic/main/5de31b2da4cee1f26d18751f065c96a0.jpg" style="width:96px;height:96px;" alt="二维码">
-      <p style="font-size:11px;color:#777;margin-top:4px;">扫码参与测评</p>
+    <div style="background:#fff;border:1px solid #f0e6d0;border-radius:10px;padding:10px 14px;margin-bottom:10px;">
+      <p style="font-size:13px;color:#5a4a28;line-height:1.6;"><span style="color:#9a8a6a;">六大维度分数</span>　${globalShareData.scores.map(s=>`<strong style="color:#a0522d;">${s}</strong>/12`).join(" · ")}</p>
+    </div>
+    <div style="background:#fff;border:1px solid #f0e6d0;border-radius:10px;padding:10px 14px;margin-bottom:14px;">
+      <p style="font-size:13px;color:#5a4a28;font-weight:700;margin-bottom:6px;">改进提升方向</p>
+      <div style="font-size:12px;color:#7a6a4a;line-height:1.9;">${globalShareData.topImprove.map(s=>`<div>• ${s}</div>`).join("")}</div>
+    </div>
+    <div style="text-align:center;border-top:1px dashed #e2d4b8;padding-top:14px;">
+      <div id="qrPlaceHolder" style="width:112px;height:112px;margin:0 auto 6px;padding:8px;background:#fff;border:1px solid #e6dcc4;border-radius:14px;box-shadow:0 8px 20px rgba(139,90,43,0.12);display:flex;align-items:center;justify-content:center;overflow:hidden;">
+        <img src="https://cdn.jsdelivr.net/gh/zhengsiyuan777/pic@main/5de31b2da4cee1f26d18751f065c96a0.jpg" width="96" height="96" style="display:block;border-radius:4px;" alt="扫码参与测评" crossorigin="anonymous">
+      </div>
+      <p style="font-size:11px;color:#9a8a6a;letter-spacing:2px;">扫一扫 · 参与测评</p>
     </div>
   </div>`;
 
-  await new Promise(res=>setTimeout(res,1200));
-  const canvas = await html2canvas(canvasWrap,{
-    useCORS:true,
-    backgroundColor:"#fffbf1",
-    scale: window.devicePixelRatio
-  });
-  if(isWeChatBrowser){
-    alert("微信浏览器不支持直接下载！请长按下方生成的图片，保存到相册");
-    canvasWrap.appendChild(canvas);
-  }else{
-    const a = document.createElement("a");
-    a.download = "廉洁测评分享.png";
-    a.href = canvas.toDataURL("image/png");
-    a.click();
+  // 等待静态二维码图片加载完成后再截图（3秒超时兜底，加载失败不阻塞出图）
+  const qrImgEl = document.getElementById("qrPlaceHolder").querySelector("img");
+  if(qrImgEl && !qrImgEl.complete){
+    await new Promise(res=>{
+      const t = setTimeout(()=>res(), 3000);
+      qrImgEl.onload = ()=> { clearTimeout(t); res(); };
+      qrImgEl.onerror = ()=> { clearTimeout(t); res(); };
+    });
+  }
+
+  await new Promise(res=>setTimeout(res,300));
+  const card = document.getElementById("shareImageCard");
+
+  try{
+    const canvas = await html2canvas(card,{
+      useCORS:true,
+      backgroundColor:"#fffbf1",
+      scale: window.devicePixelRatio || 2,
+      logging:false
+    });
+
+    if(isWeChatBrowser){
+      alert("微信浏览器不支持直接下载！请长按下方生成的图片，保存到相册");
+      canvasWrap.appendChild(canvas);
+    }else{
+      const a = document.createElement("a");
+      a.download = "廉洁测评分享.png";
+      a.href = canvas.toDataURL("image/png");
+      a.click();
+    }
+  }catch(e){
+    console.error("生成图片失败",e);
+    alert("生成分享图片失败，请直接复制链接分享");
   }
 }
 
